@@ -5383,6 +5383,7 @@ core_defaults._set('doughnut', {
 		},
 
 		onClick: function(e, legendItem) {
+      //console.log('onClick::',e,legendItem);
 			var index = legendItem.index;
 			var chart = this.chart;
 			var i, ilen, meta;
@@ -6201,6 +6202,7 @@ core_defaults._set('polarArea', {
 		},
 
 		onClick: function(e, legendItem) {
+      console.log('on click 2::',e,legendItem);
 			var index = legendItem.index;
 			var chart = this.chart;
 			var i, ilen, meta;
@@ -8191,7 +8193,7 @@ core_defaults._set('global', {
         // console.log('aDAT::', aDAT);
       //  console.log('aData::', aData.then((value)=>{ return value}));
       //  let aValue = aData.then(function(result) { console.log('result::', aValue); return result });
-      //  console.log('aValue::', aValue);
+      //  console.log('tooltipItem::', label);
 					label += returnDataExt(tooltipItem.value, label, sMonth);//here here here - we can expand the rollover from here
 				} else {
 					label += returnDataExt(tooltipItem.yLabel, label, sMonth);//here here here - we can expand the rollover from here

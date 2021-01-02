@@ -9,22 +9,23 @@ window.addEventListener("resize", function () {
  };
 });
 
-window.addEventListener("mouseover", function () {
-  console.log('mouse over resize:', chart.tooltip);
-
+window.addEventListener("mouseover", function (event){
+  //console.log('mouse over resize:', event);
 });
-/*!function() {
+window.addEventListener('click',function(event){
+  console.log('clickevent;;',event);
+})
+/*(function loadDetect(){
 	function detectDevTool(allow) {
   //  console.log('allow::', allow);
   	if(isNaN(+allow)) allow = 100;
-    var start = new Date();
+    var start = +new Date();
     debugger;
-    var end = new Date();
+    var end = +new Date();
+  //  console.log(start,end,end - start,'<< debugger opened!!',allow);
     if(isNaN(start) || isNaN(end) || end - start > allow) {//<<this is the genius
     	alert('DEVTOOLS detected. all operations will be terminated. Please disable developer tools to view this graph');
-      document.write('DEVTOOLS DETECTED. PLEASE DISABLE DEV TOOLS AND REFRESH YOUR BROWSER!');
-      //add message with time and divert
-    //  window.location.href = 'https://www.google.com';
+      window.location.href = 'YoYDeathCount.html';
     }
   }
   if(window.attachEvent) {
@@ -44,42 +45,37 @@ window.addEventListener("mouseover", function () {
     window.addEventListener('focus', detectDevTool);
     window.addEventListener('blur', detectDevTool);
   }
-}();*/
+})();*/
 var aDAT = [];
 window.onload = init();
-
-    function init(){
-
-        //var aData = new Promise(returnGetData, reject);
-        const aData = new Promise((resolve, reject) => {
-            resolve(returnGetData());
-            reject('problem')
-        })
-        aData.then((data) => {
-          //gets the data
-        //  console.log("promise data:: ", data);
-          aDAT = data;//our data used in popover
-          sortData(data);//data formated for chart
-          drawraph();
-        })
-      /*  .then(() => {
-            drawraph();
-        })*/
-        .catch((error) => {
-            console.log("ERROR", error);
-        })
-    }
-
-    var aDataSets = [];
+function init(){
+    (async()=>{
+        try {
+          const aData = new Promise((resolve, reject) => {resolve(returnGetData());reject('problem')});
+          aDAT = await aData.then((data)=>{return data});
+          const sortedData = new Promise((resolve,reject)=>{resolve(sortData(aDAT));reject((error)=>{console.log('error sorting images!')})});
+          await sortedData.then((data)=>{drawraph(data);}).then(()=>{console.log('drawraph::',chart);})
+          }catch(error){
+          console.log('init error::',error);
+        }
+      })();
+  }
     var chart;
-    function drawraph(){
+
+    function drawraph(dataSets){
         //get client width
+      //  console.log('drawraph;;',dataSets);
+        Chart.defaults.global.defaultColor = 'rgba(0,0,0,0.8)';
+        Chart.defaults.global.defaultFontColor = 'rgba(255,255,255,0.9)';
+        Chart.defaults.global.fontColor = '#fafafa';
         var ctx = document.getElementById('myChart').getContext('2d');
+              //  ctx.style.backgroundColor = 'rgba(255,0,0,255)';
         chart = new Chart(ctx, {
             // The type of chart we want to create
             type: 'line',
             maintainAspectRatio:true,
             responsive: true,
+
             //objective
             //get data and loop anto dataset as below
             //get min and max year
@@ -89,23 +85,47 @@ window.onload = init();
             // The data for our dataset
             data: {
                 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                datasets: aDataSets
+                datasets: dataSets
             },
             // Configuration options go here
             options: {
-              events:['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
+              events:['mousemove','mouseout','click','touchstart','touchmove'],
               legend: {
-                display: true,
-                labels: {
-                    fontColor: 'rgb(0, 0, 0)'
+                  display: true,
+                  position:'bottom',
+                  labels: {
+                      fontColor: 'rgb(255, 255, 255,0.9)'
+                  },
+                  onHover:function(e){
+                  e.target.style.cursor='pointer';},
+                  onLeave:function(e){
+                  e.target.style.cursor='default';}
                 },
-                boxWidth:400
-              },
-              tooltips: {
+              scales: {
+                  xAxes: [{
+                    gridLines: {
+                      color:'rgba(255,255,0,0.3)'
+                    }
+                  }],
+                  yAxes: [{
+                    gridLines: {
+                      color:'rgba(255,255,0,0.3)'
+                    }
+                  }],
+                },
+                layout: {
+                    padding: {
+                        left: 50,
+                        right: 50,
+                        top: 50,
+                        bottom: 50
+                    }
+                },
+                tooltips: {
                   mode: 'nearest',
                   // Disable the on-canvas tooltip
-                  enabled: true,
-                /*  custom: function(tooltipModel) {
+                  enabled: false,
+                  custom: function(tooltipModel) {
                   //  console.log('tooltipModel:', tooltipModel);
                       // Tooltip Element - make enabled:false and work the data into here
                       var tooltipEl = document.getElementById('chartjs-tooltip');
@@ -114,7 +134,8 @@ window.onload = init();
                         if (!tooltipEl) {
                             tooltipEl = document.createElement('div');
                             tooltipEl.id = 'chartjs-tooltip';
-                            tooltipEl.innerHTML = '<div></div>';
+                            tooltipEl.innerHTML = '<div style=\"border-radius:10px;\"></div>';
+                            tooltipEl.style = 'border-radius:10px;border-style:solid;border-width:0.5px;z-index:2000;';
                             document.body.appendChild(tooltipEl);
                         }
 
@@ -126,6 +147,21 @@ window.onload = init();
 
                         // Set caret Position
                         tooltipEl.classList.remove('above', 'below', 'no-transform');
+
+                        //if tooltipModel.yAlign == bottom then move it up
+                        //caretY
+                        var iWidth = this._chart.width;
+                        //if caretX + widthof tooltip > width then move caretX left by width - 20
+                        tooltipModel.caretX = tooltipModel.caretX+10;
+
+                      //  console.log(this,'<<tooltipModel::',tooltipModel,this._chart.width,tooltipModel.caretX+10);
+                        if (tooltipModel.caretX+200 >this._chart.width){
+                          tooltipModel.caretX = tooltipModel.caretX-200;
+                        }
+                        if (tooltipModel.yAlign === 'bottom'){
+
+                          tooltipModel.caretY = tooltipModel.caretY-190;
+                        }
                         if (tooltipModel.yAlign) {
                             tooltipEl.classList.add(tooltipModel.yAlign);
                         } else {
@@ -141,20 +177,20 @@ window.onload = init();
                             var titleLines = tooltipModel.title || [];
                             var bodyLines = tooltipModel.body.map(getBody);
 
-                            var innerHtml = '<div>';
+                            var innerHtml = '<div>'+returnNavController();
 
                             titleLines.forEach(function(title) {
-                                innerHtml += '<div>' + title + '</div>';
+                                innerHtml += '<div>'+title+'</div>';
                             });
                             innerHtml += '</div><div>';
                             //  console.log('bodyLines::', bodyLines);
                             bodyLines.forEach(function(body, i) {
                                 var colors = tooltipModel.labelColors[i];
-                                var style = 'background:' + colors.backgroundColor;
-                                style += '; border-color:' + colors.borderColor;
-                                style += '; border-width: 2px';
-                                var span = '<span style="' + style + '"></span>';
-                                innerHtml += '<div>' + span + body + '</div>';
+                                var style = 'background:'+colors.backgroundColor;
+                                style += '; border-color:'+colors.borderColor;
+                                style += '; border-width:2px';
+                                var span = '<span style="'+style+'"></span>';
+                                innerHtml += '<div>'+span+body+'</div>';
                             });
                             innerHtml += '</div>';
 
@@ -169,7 +205,7 @@ window.onload = init();
                         //tooltipEl.style.opacity = 1;
                         tooltipEl.style.backgroundColor = 'rgba(0,0,0,0.8)';
                         tooltipEl.style.color = '#FAFAFA';
-                        tooltipEl.style.maxWidth = '100%';
+                        tooltipEl.style.maxWidth = '50%';
                         tooltipEl.style.position = 'absolute';
                         tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
                         tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
@@ -178,38 +214,34 @@ window.onload = init();
                         tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
                         tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
                         tooltipEl.style.pointerEvents = 'none';
-                    }*/
+                    }
                 }
             }
         });
+
+        var oStyle = document.getElementById('myChart');
+        oStyle.style.backgroundColor = 'rgba(0,0,0,0.5)';
+        oStyle.style.color='white';
+      //  document.querySelector('.navConHolder').style.zindex = 3000;
+
     }
-    function sortData(data){
+    var sortData = function(data){
     //  console.log('sort data::', data);
       var iminYear = 0;
       var imaxYear = 0;
-
+      var aDataSets = [];
       for (var i = 0; i < data.length; i++) {
-        if (i === 0) {
-          iminYear = parseInt(data[i].year);
-          imaxYear = parseInt(data[i].year);
-        //  console.log('in zero:', iminYear, '   ',  imaxYear);
-        }
+        if (i === 0) {iminYear = parseInt(data[i].year);imaxYear = parseInt(data[i].year);}
+        if (parseInt(data[i].year) < iminYear) {iminYear = parseInt(data[i].year);}
 
-        if (parseInt(data[i].year) < iminYear) {
-          iminYear = parseInt(data[i].year);
-        //      console.log('iminYear::', iminYear);
-        }
-        if (parseInt(data[i].year) > imaxYear) {
-          imaxYear = parseInt(data[i].year);
-      //  console.log('imaxYear::', imaxYear);
-        }
-      }
+        if (parseInt(data[i].year) > imaxYear) {imaxYear = parseInt(data[i].year);}};
       var loopLength = (imaxYear - iminYear);
       var iThisYear = new Date();
-      var tenCount = 0;
       //  console.log('iminYear::', iminYear, '  imaxYear::', imaxYear, '   loopLength::', loopLength, '   iThisYear::', iThisYear.getFullYear());
         //var usedYear = 0;
-      //  for (var i = iminYear; i <= imaxYear; i++) {//loops through each year
+      //  for (var i = iminYear; i <= imaxYear; i++) {//loops through each years
+        var iFade = 10;//note 255/14 rounds to 18
+        var iFull = 200;
         for (var i = imaxYear; i >= iminYear; i--) {//loops through each year--max to min means the latest is on top!
           var colorNo = i.toString();
           colorNo = (colorNo.substring(2) * 5);
@@ -217,13 +249,18 @@ window.onload = init();
         //  console.log('colorNo::', colorNo);
           var usedYear = i
           var strBackgroundColour = '';
-          if (i === iThisYear.getFullYear()) {
-            strBackgroundColour = 'rgb(255, 0, 0)'
+          if (i === 2020) {
+            strBackgroundColour = 'rgb(255,0,0,0.8)';
+          } else if (i > 2020){
+            strBackgroundColour = 'rgb(0,0,255,0.8)';
           } else {
-          //  strBackgroundColour = 'rgb(' + getRandomNumber(255, 0) + ', ' + getRandomNumber(255, 0) + ', ' + getRandomNumber(255, 0) + ')'
-            strBackgroundColour = 'rgb(255, 255, ' + colorNo + ')'
-            tenCount += 10;
+            //we have 14 years before 2020, gradient change the colour from white to yellow over 14 years
+            strBackgroundColour = `rgb(255,255,${iFull},0.7)`;
+            iFull -= iFade;
           }
+
+
+          //do this then return dataset
           for (var j = 0; j < data.length; j++) {
             if (data[j].year === i && usedYear === i) {
               var sObject = {
@@ -239,36 +276,30 @@ window.onload = init();
               usedYear = 0;
             }
           }
-    //
+          if (i === iminYear){
+              return aDataSets;
+          }
         }
+
       //  console.log('aDataSets::', JSON.stringify(aDataSets))
     }
-    function dataReturn(year, data) {
+    var dataReturn = function(year, data) {
     //  console.log('dataamounts::', year);
       var aMonthlyData = [];
       for (var i = 1; i < 13; i++) {//return each months data
         var iamount = returnamounts(year, i, data);
-      /*  if (iamount == null) {
-          iamount = 0;
-        }*/
         aMonthlyData.push(iamount);
       }
       //console.log('retiurning data for year::', JSON.stringify(aMonthlyData));
       return aMonthlyData;
     }
-    function returnamounts(year, month, data) {
+    var returnamounts = function(year, month, data) {
     //  var aReturnamounts = '';
       for (var i = 0; i < data.length; i++) {
         if (parseInt(data[i].year) === year && parseInt(data[i].month) === month) {
-        //  console.log(data[i].year, '<<in year month>>', data[i].month);
             iReturn = data[i].amount;
-        //    console.log('hellloooo   ' + iReturn);
-          /*  if ((data[i].amount).toString() === 'null') {
-              iReturn = 0;
-            }*/
             return iReturn;
             break;
-
         }
       }
       //return aReturnamounts;
@@ -281,45 +312,43 @@ window.onload = init();
         })
       .then(response => response.json())
         .then(data => {
-        // closeModal();
-        //  console.log('deathcount return;;', data);
           return data;
-        //  sortData(data);
        })
        .catch(error => {
         //  toastSuccess("There was an error!");
           console.log("error::;", error);
        })
     }
-    function drawGraph(){
-
-    }
-    function getRandomNumber(hi, lo) {
+    var getRandomNumber = function(hi, lo) {
         //returns a randon number between hi and lo
         return Math.floor(Math.random() * (hi - lo)) + lo;
     }
 
-    function returnDataExt(value, year, month){
-    //  console.log('aDAT::', aDAT);
+    var returnDataExt = function(value, year, month){
+      //console.log('aDAT::', aDAT);
       var ireturnMonthNo = returnMonthNo(month);
       for (var i = 0; i < aDAT.length; i++) {
       //  console.log('comparing::' + JSON.stringify(aDAT[i].month) + ' = ' + month + ' year::', JSON.stringify(aDAT[i].year) + ' = ' + year);
           if (aDAT[i].month == ireturnMonthNo && aDAT[i].year == year && aDAT[i].rType == 2) {
               oReturnMobject = aDAT[i];
-          //    console.log('in break::', oReturnMobject);
-          //          console.log('aDAT::', aDAT);
-              //return oReturnMobject;
               var sflux = 'PLUS ' + oReturnMobject.flux;
               if (oReturnMobject.flux < 0) {
                 sflux = 'MINUS ' + Math.abs(oReturnMobject.flux);
               }
-              var sHTML = ': ' + value + ' people died, previous year: ' + oReturnMobject.lastyear + '\n people died - fluctuation: ' + sflux;
+              var sHTML = `<div>
+                            <div class='toolTipInfo'>${month} : ${year} : ${value} people died</div>`
+                            if (year>2006){
+                              sHTML += `<div class='toolTipInfo'>previous year <i>(${year-1})</i> : ${oReturnMobject.lastyear}\n people died</div>
+                              <div class='toolTipInfo'>fluctuation : ${sflux}</div>`
+                              sHTML += return5YearAvarage({year:year,month:month,monthNo:ireturnMonthNo,amount:value});// `<div class='toolTipInfo'>get info</div>`      `
+                            }
+                  sHTML += `</div>`;
               return sHTML;
           }
       }
     }
 
-    function returnMonthNo(month) {
+    var returnMonthNo = function(month) {
       //returns the month number from strings
     //  console.log('returning month', month)
       var returnValue = '';
@@ -376,3 +405,55 @@ window.onload = init();
         }
         return returnValue;
     }
+    var return5YearAvarage = (function(data){
+      //loop through dataset
+//data = {year:year,month:month,monthNo:ireturnMonthNo}
+      var averagePeriod = 5;
+      var startYear = data.year-averagePeriod;
+      if (startYear < 2006){
+        averagePeriod = averagePeriod-(2006-startYear);
+      }
+      var iTotal = data.year-startYear;
+      var iaverage = 0;
+      var sHTML = ``;
+      for (var i=data.year-1;i>=startYear;i--){
+          for (var j=0;j<aDAT.length;j++){
+            //look forn the month of the year in // QUESTION:
+      //    console.log('comparing year>>',aDAT[j].year,i,'  month>>',aDAT[j].month,data.month)
+            if (aDAT[j].year===i&&aDAT[j].month===data.monthNo){
+              iaverage+=aDAT[j].amount;
+              sHTML+=`<div class='toolTipInfo'>${data.month} : ${aDAT[j].year} : ${aDAT[j].amount} people died</div>`
+            }
+          }
+          if (i===startYear){
+              //data.amount - iaverage
+              iaverage = Math.ceil(data.amount-(iaverage/averagePeriod));
+              var sFlux = 'PLUS '+iaverage;
+              if (iaverage < 0){
+                sFlux = 'MINUS '+Math.abs(iaverage);
+              }
+              return `<div class='toolTipInfo'>Average against last ${averagePeriod} years : ${sFlux}</div>${sHTML}`;
+          }
+      }
+
+
+    });
+    var returnNavController = (()=>{
+      return `<div class='navConHolder' style='float:right;width:25%;text-align:center;'>
+                <div class='navConRow' style='display:flex;'>
+                  <div class='navComTL' style='flex:1;'>&nbsp;</div>
+                  <div class='navConup' style='flex:1;cursor:pointer;'>x</div>
+                  <div class='navComTR' style='flex:1;'>&nbsp;</div>
+                </div>
+                <div class='navConRow' style='display:flex;'>
+                  <div class='navComLeft' style='flex:1;cursor:pointer;'>x</div>
+                  <div class='navConC' style='flex:1;'>&nbsp;</div>
+                  <div class='navComRight' style='flex:1;cursor:pointer;'>x</div>
+                </div>
+                <div class='navConRow' style='display:flex;'>
+                  <div class='navComBL' style='flex:1;'>&nbsp;</div>
+                  <div class='navConDown' style='flex:1;cursor:pointer;'>x</div>
+                  <div class='navComBR' style='flex:1;'>&nbsp;</div>
+                </div>
+              </div>`
+    })
