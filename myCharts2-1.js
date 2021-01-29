@@ -501,19 +501,19 @@ function init(){
         //console.log('sfiveYearAverage::',sfiveYearAverage)
         var sHighlight = ``;
         //console.log('comparing::',data[i].label,2015)
-        if (data[i].label===2015){
+        if (data[i].label===2015||data[i].label===2020){
           sHighlight= 'sHighlight';
         }
-          if (data[i].label !== 2020){
+          if (data[i].label !== 2021){
             sHTML += `<div class='tabRow ${sHighlight}'>
-                        <div class='tabBigHead' style='display:inline-block;width:200px;'>${data[i].label}</div>
-                        <div class='tabMidHead' style='display:inline-block;width:200px;'>${formatNumber(iYearEnd)} people died</div>`;
+                        <div class='tabBigHead' style='display:inline-block;width:180px;'>${data[i].label}</div>
+                        <div class='tabMidHead' style='display:inline-block;width:180px;'>${formatNumber(iYearEnd)} people died</div>`;
                         if (data[i].label>ifirstYear){
-                          sHTML += `<div class='tabMidHead' style='display:inline-block;width:300px;'>${oneFlux}&nbsp;${formatNumber(Math.abs(lastYearFlux))}&nbsp;against last year</div>
-                            <div class='tabMidHead' style='display:inline-block;width:300px;'>${fivePlus}&nbsp;${formatNumber(Math.abs(fiveYearFlux))}&nbsp;against last ${avCompare} years</div>`;
+                          sHTML += `<div class='tabMidHead' style='display:inline-block;width:250px;'>${oneFlux}&nbsp;${formatNumber(Math.abs(lastYearFlux))}&nbsp;against last year</div>
+                            <div class='tabMidHead' style='display:inline-block;'>${fivePlus}&nbsp;${formatNumber(Math.abs(fiveYearFlux))}&nbsp;against last ${avCompare} years</div>`;
                         }else{
-                          sHTML += `<div class='tabMidHead' style='display:inline-block;width:300px;'>no more data</div>
-                            <div class='tabMidHead' style='display:inline-block;width:300px;'>no more data</div>`;
+                          sHTML += `<div class='tabMidHead' style='display:inline-block;width:250px;'>no more data</div>
+                            <div class='tabMidHead' style='display:inline-block;'>no more data</div>`;
                       }
             sHTML += `</div>`
                     }
