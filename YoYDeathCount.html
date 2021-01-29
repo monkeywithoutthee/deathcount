@@ -1,6 +1,6 @@
 
 <html>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
 
     <title>Death Count - England and Wales (year-on-year) - Data from Office of National Statistics</title>
 <head>
@@ -24,31 +24,60 @@
   .toolTipInfo{
     padding:3px;
   }
+  .tabular{
+  }
+  .tabRow{
+    /*display:flex;*/
+  /*  padding:5px;*/
+    border-style:solid;
+    border-width:0.5px;
+    border-radius:3px;
+    margin:5px;
+  }
+  .tabBigHead{
+    text-align:center;
+    color:black;
+    background-color:rgba(255,255,255,0.5);
+    padding-top:3px;
+    border-radius:0;
+    margin-bottom:0;
+    height:27px;
+  }
+  .tabMidHead{
+    font-size: smaller;
+    padding:5px;
+    color:rgba(255,255,255,0.7);
+  }
+  .yearEndHead{
+    margin:10px;
+    font-size: larger;
+  }
+  .sHighlight{
+    background-color:rgba(255,255,128,0.1);
+  }
   body{
     font-family: Verdana, sans-serif;
     background-color: rgba(0,0,0,0.8);
     color:rgba(255,255,255,0.8);
   }
   </style>
-  <!--<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>-->
-<!--  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
-  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
-  <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>-->
-    <!--<script src="https://www.redstonecollective.com/scripts/charts.js"></script>-->
-    <script src="scripts/charts.js"></script>
+
+    <script src='scripts/charts.js'></script>
 	</head>
 <body>
-<div style="padding:10px;">
-<div><span style="padding:10px;">Death Count - England and Wales (year-on-year)</span>&nbsp;<a href='https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/deaths/datasets/monthlyfiguresondeathsregisteredbyareaofusualresidence' target='_blank'>Data from Office of National Statistics</a></div>
-<div style="padding:10px;">note:these figures are the amount of people recorded as having died in each month regardless of cause.</div>
-<div style="padding:0px;">
-  <canvas id="canvas" width="5" height="5"></canvas>
+<div style='padding:10px;'>
+<div><span style='padding:10px;'>Death Count - England and Wales (year-on-year)</span>&nbsp;<a href='https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/deaths/datasets/monthlyfiguresondeathsregisteredbyareaofusualresidence' target='_blank'>Data from Office of National Statistics</a></div>
+<div style='padding:10px;'>note:these figures are the amount of people recorded as having died in each month regardless of cause.</div>
+<div style='padding:0px;'>
+  <canvas id='canvas' width='5' height='5'></canvas>
 </div>
-<div class="chart-container" style="position:relative;">
-<canvas id="myChart"></canvas>
+<div class='chart-container' style='position:relative;'>
+<canvas id='myChart'></canvas>
+<div class='tabular'></div>
 </div>
+
 </div>
-        <script src="scripts/myCharts.js"></script>
-      <!--  <script src='https://www.redstonecollective.com/scripts/myChartsx.js'></script>-->
+        <script src='scripts/myCharts2-1.js'></script>
+      <!--  <script src='https://www.redstonecollective.com/scripts/myCharts2-1.js'></script>-->
   </body>
   </html>
