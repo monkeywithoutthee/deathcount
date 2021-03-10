@@ -9,6 +9,6 @@ feel free to use to prove whatever you would like to prove.
 
 feel free to use and improve.
 
-The API may be subject to change.
+The API key may be subject to change.
 
 thanks
