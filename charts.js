@@ -8173,7 +8173,8 @@ core_defaults._set('global', {
 				}
         sMonth = title;
       //  console.log('title::', title);
-				return title;
+			//	return title;
+        return '';
 			},
 			afterTitle: helpers$1.noop,
 
@@ -8194,9 +8195,9 @@ core_defaults._set('global', {
       //  console.log('aData::', aData.then((value)=>{ return value}));
       //  let aValue = aData.then(function(result) { console.log('result::', aValue); return result });
       //  console.log('tooltipItem::', label);
-					label += returnDataExt(tooltipItem.value, label, sMonth);//here here here - we can expand the rollover from here
+					label = returnDataExt(tooltipItem.value, label, sMonth);//here here here - we can expand the rollover from here
 				} else {
-					label += returnDataExt(tooltipItem.yLabel, label, sMonth);//here here here - we can expand the rollover from here
+					label = returnDataExt(tooltipItem.yLabel, label, sMonth);//here here here - we can expand the rollover from here
 				}
 				return label;
 			},
@@ -15148,6 +15149,7 @@ core_defaults._set('global', {
 
 		// a callback that will handle
 		onClick: function(e, legendItem) {
+      //console.log(e,'inside click::',legendItem);//here here here
 			var index = legendItem.datasetIndex;
 			var ci = this.chart;
 			var meta = ci.getDatasetMeta(index);

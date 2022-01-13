@@ -2,51 +2,31 @@
 .-.. --- ...- . / .--. . .- -.-. . / ..- -. -.-. . .-. ... - .- -. -.. .. -. --.
 .-.. --- ...- . / .--. . .- -.-. . / ..- -. -.-. . .-. ... - .- -. -.. .. -. --.
 .-.. --- ...- . / .--. . .- -.-. . / ..- -. -.-. . .-. ... - .- -. -.. .. -. --.*/
-window.addEventListener("resize", function () {
+document.addEventListener("resize", function () {
 //  console.log('update resize:', document.getElementById('chartjs-tooltip'));
  if (document.getElementById('chartjs-tooltip') !== null) {
    document.getElementById('chartjs-tooltip').style.opacity = 0;
  };
 });
 
-window.addEventListener("mouseover", function(event){
+document.addEventListener("mouseover", function(event){
   //console.log('mouse over resize:', event);
 });
-window.addEventListener('click',function(event){
-//  console.log('clickevent;;',event);
+document.addEventListener('click',function(event){
+  document.getElementById('myChart').selected = true;
+  event.preventDefault();
+  //console.log('clickevent;;',event.target);
+  if(event.target.tagName==='A'){window.open(event.target.href, '_blank')}
 });
-(function loadDetect(){
-	function detectDevTool(allow) {
-  //  console.log('allow::', allow);
-  	if(isNaN(+allow)) allow = 100;
-    var start = +new Date();
-    debugger;
-    var end = +new Date();
-    console.log(start,end,end - start,'<< debugger opened!!',allow);
-    if(isNaN(start)||isNaN(end)||end-start>allow){
-    	alert('DEVTOOLS detected. all operations will be terminated. Please disable developer tools to view this graph');
-      return false;
-    }
-  }
-    if(window.attachEvent) {
-      console.log('window.attachEvent::',window.attachEvent);
-    	if (document.readyState === "complete" || document.readyState === "interactive") {
-      	detectDevTool();
-        window.attachEvent('onresize', detectDevTool);
-        window.attachEvent('onmousemove', detectDevTool);
-        window.attachEvent('onfocus', detectDevTool);
-        window.attachEvent('onblur', detectDevTool);
-      } else {
-      	setTimeout(argument.callee, 0);
-      }
-    } else {
-    	window.addEventListener('load', detectDevTool);
-      window.addEventListener('resize', detectDevTool);
-      window.addEventListener('mousemove', detectDevTool);
-      window.addEventListener('focus', detectDevTool);
-      window.addEventListener('blur', detectDevTool);
-    }
-})();
+
+document.addEventListener('mousedown', function(event) {
+  // simulating hold event
+  setTimeout(function() {
+    // You are now in a hold state, you can do whatever you like!
+    document.getElementById('myChart').selected = true;
+  //  console.log(document.getElementById('myChart').selected,'<<in hold::',event);
+  }, 500);
+});
 var aDAT = [];
 window.onload = init();
 function init(){
@@ -55,21 +35,25 @@ function init(){
           const aData = new Promise((resolve, reject) => {resolve(returnGetData());reject('problem')});
           aDAT = await aData.then((data)=>{return data});
           const sortedData = new Promise((resolve,reject)=>{resolve(sortData(aDAT));reject((error)=>{console.log('error sorting images!')})});
-          await sortedData.then((data)=>{drawraph(data);return data}).then((data)=>{drawTabular(data);})
+          await sortedData.then((data)=>{drawraph(data);return data}).then((data)=>{drawTabular(data);
+            //console.log(aDAT,'<<chart::',sortedData);
+          })
           }catch(error){
           console.log('init error::',error);
         }
       })();
   }
     var chart;
+
     const ifirstYear=2006;//the year of the first dataset
+    var ctx = document.getElementById('myChart').getContext('2d');
     function drawraph(dataSets){
         //get client width
       //  console.log('drawraph;;',dataSets);
         Chart.defaults.global.defaultColor = 'rgba(0,0,0,0.8)';
         Chart.defaults.global.defaultFontColor = 'rgba(255,255,255,0.9)';
         Chart.defaults.global.fontColor = '#fafafa';
-        var ctx = document.getElementById('myChart').getContext('2d');
+      //  var ctx = document.getElementById('myChart').getContext('2d');
               //  ctx.style.backgroundColor = 'rgba(255,0,0,255)';
         chart = new Chart(ctx, {
             // The type of chart we want to create
@@ -77,15 +61,9 @@ function init(){
             maintainAspectRatio:true,
             responsive: true,
 
-            //objective
-            //get data and loop anto dataset as below
-            //get min and max year
-            //loop from min to max ithisYear
-            //make data string for each year by looping in order of date
-
             // The data for our dataset
             data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                 datasets: dataSets
             },
             // Configuration options go here
@@ -191,7 +169,7 @@ function init(){
                                 style += '; border-color:'+colors.borderColor;
                                 style += '; border-width:2px';
                                 var span = '<span style="'+style+'"></span>';
-                                innerHtml += '<div>'+span+body+'</div>';
+                                innerHtml += '<div>'+body+'</div>';
                             });
                             innerHtml += '</div>';
 
@@ -204,7 +182,7 @@ function init(){
 
                         // Display, position, and set styles for font
                         //tooltipEl.style.opacity = 1;
-                        tooltipEl.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                        tooltipEl.style.backgroundColor = 'rgba(0,0,0,0.9)';
                         tooltipEl.style.color = '#FAFAFA';
                         tooltipEl.style.maxWidth = '50%';
                         tooltipEl.style.position = 'absolute';
@@ -218,10 +196,13 @@ function init(){
                     }
                 }
             }
+
         });
 
+
+
         var oStyle = document.getElementById('myChart');
-        oStyle.style.backgroundColor = 'rgba(0,0,0,0.5)';
+        oStyle.style.backgroundColor = 'rgba(0,0,0,0.4)';
         oStyle.style.color='white';
       //  document.querySelector('.navConHolder').style.zindex = 3000;
 
@@ -241,7 +222,7 @@ function init(){
       //  console.log('iminYear::', iminYear, '  imaxYear::', imaxYear, '   loopLength::', loopLength, '   iThisYear::', iThisYear.getFullYear());
         //var usedYear = 0;
       //  for (var i = iminYear; i <= imaxYear; i++) {//loops through each years
-        var iFade = 10;//note 255/14 rounds to 18
+        var iFade = 18;//note 255/14 rounds to 18
         var iFull = 200;
         for (var i = imaxYear; i >= iminYear; i--) {//loops through each year--max to min means the latest is on top!
           var colorNo = i.toString();
@@ -332,20 +313,33 @@ function init(){
       //  console.log('comparing::' + JSON.stringify(aDAT[i].month) + ' = ' + month + ' year::', JSON.stringify(aDAT[i].year) + ' = ' + year);
           if (aDAT[i].month == ireturnMonthNo && aDAT[i].year == year && aDAT[i].rType == 2) {
               oReturnMobject = aDAT[i];
-              var sflux = 'PLUS ' + oReturnMobject.flux;
+              var sflux = '+ ' + oReturnMobject.flux;
               if (oReturnMobject.flux < 0) {
-                sflux = 'MINUS ' + Math.abs(oReturnMobject.flux);
-              }
+                //sflux = '- ' + Math.abs(oReturnMobject.flux);
+                sflux = oReturnMobject.flux;
+              };
+              var iPerc = (oReturnMobject.flux / oReturnMobject.lastyear) * 100;//gets the percentage rise from last year
+              //  console.log(oReturnMobject.lastyear,oReturnMobject.flux,'working the perc::')
+              const thisRs = returnCumulative({year:year,month:month,monthNo:ireturnMonthNo,thisRow:i,data:aDAT});
+              const thatRs = returnCumulative({year:year-1,month:month,monthNo:ireturnMonthNo,thisRow:i,data:aDAT});
+              const diff = thisRs-thatRs;
+              const percDif = (diff / thatRs) * 100;
+            //  console.log(thisRs,thatRs,'<thisthat:',percDif);
+              //(100 * iaverage * averagePeriod) / (icumulat);//gets the percentage rise from last year
               var sHTML = `<div>
-                            <div class='toolTipInfo'>${month} : ${year} : ${value} people died</div>`
+                            <div class='toolTipInfo'><b>${month} ${year} : ${nwCs(value)}</b> deaths</div>`
                             if (year>ifirstYear){
-                              sHTML += `<div class='toolTipInfo'>previous year <i>(${year-1})</i> : ${oReturnMobject.lastyear}\n people died</div>
-                              <div class='toolTipInfo'>fluctuation : ${sflux}</div>`
+                              sHTML += `<div class='toolTipInfo'>prev yr <i>(${month}&nbsp;${year-1})</i> : ${nwCs(oReturnMobject.lastyear)}\n deaths</div>
+                              <div class='toolTipInfo'>fluctuation : ${nwCs(sflux)}&nbsp;(${iPerc.toFixed(2)}%)</div>
+                              <div class='toolTipInfo'>cumulative : ${nwCs(thisRs)} in ${year}</div>
+                              <div class='toolTipInfo'>${percDif.toFixed(2)}% (against prev yr: ${nwCs(thatRs)})&nbsp;</div>`;
                               sHTML += return5YearAvarage({year:year,month:month,monthNo:ireturnMonthNo,amount:value});// `<div class='toolTipInfo'>get info</div>`      `
                             }
                   sHTML += `</div>`;
               return sHTML;
           }
+
+
       }
     }
 
@@ -354,19 +348,19 @@ function init(){
     //  console.log('returning month', month)
       var returnValue = '';
       switch(month.toLowerCase()) {
-        case 'january':
+        case 'jan':
           returnValue = 1;
           break;
 
-        case 'february':
+        case 'feb':
           returnValue = 2;
           break;
 
-        case 'march':
+        case 'mar':
           returnValue = 3;
           break;
 
-        case 'april':
+        case 'apr':
           returnValue = 4;
           break;
 
@@ -374,38 +368,49 @@ function init(){
           returnValue = 5;
           break;
 
-        case 'june':
+        case 'jun':
           returnValue = 6;
           break;
 
-        case 'july':
+        case 'jul':
           returnValue = 7;
           break;
 
-        case 'august':
+        case 'aug':
           returnValue = 8;
           break;
 
-        case 'september':
+        case 'sep':
           returnValue = 9;
           break;
 
-        case 'october':
+        case 'oct':
           returnValue = 10;
           break;
 
-        case 'november':
+        case 'nov':
           returnValue = 11;
           break;
 
-        case 'december':
+        case 'dec':
           returnValue = 12;
           break;
         default:
           returnValue = 1;
         }
         return returnValue;
-    }
+    };
+    var returnCumulative=((data)=>{
+      //console.log('returnCumulative::',data);
+      var returnAmount = 0;
+      for (var i = 0; i < data.data.length; i++) {
+        //console.log(data.data[i].year,data.year,'<<years months::',data.data[i].month,data.monthNo)
+        if(data.data[i].year===data.year&&data.data[i].month<=data.monthNo){
+          returnAmount += data.data[i].amount;
+        }
+      }
+      return returnAmount;
+    });
     var return5YearAvarage = (function(data){
       //loop through dataset
 //data = {year:year,month:month,monthNo:ireturnMonthNo}
@@ -416,32 +421,37 @@ function init(){
       }
       var iTotal = data.year-startYear;
       var iaverage = 0;
+      var icumulat = 0;
       var sHTML = ``;
+
       for (var i=data.year-1;i>=startYear;i--){
           for (var j=0;j<aDAT.length;j++){
+            var iPerc = 0;
             //look forn the month of the year in // QUESTION:
       //    console.log('comparing year>>',aDAT[j].year,i,'  month>>',aDAT[j].month,data.month)
             if (aDAT[j].year===i&&aDAT[j].month===data.monthNo){
-              iaverage+=aDAT[j].amount;
-              sHTML+=`<div class='toolTipInfo'>${data.month} : ${aDAT[j].year} : ${aDAT[j].amount} people died</div>`
-            }
-          }
+              icumulat+=aDAT[j].amount;
+              sHTML+=`<div class='toolTipInfo'>${data.month}&nbsp;${aDAT[j].year} : ${nwCs(aDAT[j].amount)}</div>`;
+
+            };
+          };
           if (i===startYear){
               //data.amount - iaverage
-              iaverage = Math.ceil(data.amount-(iaverage/averagePeriod));
-              var sFlux = 'PLUS '+iaverage;
+              iaverage = Math.ceil(data.amount-(icumulat/averagePeriod));
+              var sFlux = '+ '+nwCs(iaverage);
               if (iaverage < 0){
-                sFlux = 'MINUS '+Math.abs(iaverage);
-              }
-              return `<div class='toolTipInfo'>Average against last ${averagePeriod} years : ${sFlux}</div>${sHTML}`;
+                sFlux = nwCs(iaverage);
+              };
+              var t = iaverage * averagePeriod;
+              iPerc = (t / icumulat) * 100;//gets the percentage rise from last year
+              //(100 * partialValue) / totalValue;
+              return `<div class='toolTipInfo'>Avr last ${averagePeriod} years : ${sFlux}&nbsp;(${iPerc.toFixed(2)}%)</div>${sHTML}`;
           }
       }
     });
     var returnanualfiveYearavarage = (function(year,data){
-
     //objective to to return the 5 year previouse as a single figures
     //loop throughn data less than year and >
-
       var averagePeriod = 5;
       var startYear = year-averagePeriod;
       if (startYear < ifirstYear){
@@ -462,27 +472,9 @@ function init(){
       iaverage = Math.ceil(iaverage/averagePeriod);
       return [iaverage,averagePeriod];
     });
-    var returnNavController = (()=>{
-      return `<div class='navConHolder' style='float:right;width:25%;text-align:center;'>
-                <div class='navConRow' style='display:flex;'>
-                  <div class='navComTL' style='flex:1;'>&nbsp;</div>
-                  <div class='navConup' style='flex:1;cursor:pointer;'>x</div>
-                  <div class='navComTR' style='flex:1;'>&nbsp;</div>
-                </div>
-                <div class='navConRow' style='display:flex;'>
-                  <div class='navComLeft' style='flex:1;cursor:pointer;'>x</div>
-                  <div class='navConC' style='flex:1;'>&nbsp;</div>
-                  <div class='navComRight' style='flex:1;cursor:pointer;'>x</div>
-                </div>
-                <div class='navConRow' style='display:flex;'>
-                  <div class='navComBL' style='flex:1;'>&nbsp;</div>
-                  <div class='navConDown' style='flex:1;cursor:pointer;'>x</div>
-                  <div class='navComBR' style='flex:1;'>&nbsp;</div>
-                </div>
-              </div>`
-    })
+
+
     var drawTabular = ((data)=>{
-    //console.log('<<draw tabular::',data)
       var sHTML = '';
 
         for (var i=0;i<data.length;i++){
@@ -506,20 +498,29 @@ function init(){
           sHighlight= 'sHighlight';
         }
           if (data[i].label !== 2021){
+
             sHTML += `<div class='tabRow ${sHighlight}'>
-                        <div class='tabBigHead' style='display:inline-block;width:180px;'>${data[i].label}</div>
-                        <div class='tabMidHead' style='display:inline-block;width:180px;'>${formatNumber(iYearEnd)} people died</div>`;
-                        if (data[i].label>ifirstYear){
-                          sHTML += `<div class='tabMidHead' style='display:inline-block;width:250px;'>${oneFlux}&nbsp;${formatNumber(Math.abs(lastYearFlux))}&nbsp;against last year</div>
-                            <div class='tabMidHead' style='display:inline-block;'>${fivePlus}&nbsp;${formatNumber(Math.abs(fiveYearFlux))}&nbsp;against last ${avCompare} years</div>`;
-                        }else{
-                          sHTML += `<div class='tabMidHead' style='display:inline-block;width:250px;'>no more data</div>
-                            <div class='tabMidHead' style='display:inline-block;'>no more data</div>`;
-                      }
-            sHTML += `</div>`
+              <div class='tabBlock'>${data[i].label} : ${nwCs(returnYearTotal(data[i].data))} deaths</div>`;
+              if (i < data.length-1){
+                var row = i*1+1;
+                var prevYr = returnYearTotal(data[row].data);
+                var flux = returnYearTotal(data[i].data)-prevYr;
+                var fluxPerc = (flux / prevYr) * 100;
+                sHTML += `<div class='tabBlock'>fluctuation : ${flux}&nbsp;(${fluxPerc.toFixed(2)}%)</div>`
+              }else{
+                sHTML += `<div class='tabBlock'>fluxuation : no more data</div>`
+              }
+              sHTML += `</div>`
                     }
         }
       document.querySelector('.tabular').innerHTML = `<div class='yearEndHead'>Year End Figures</div>${sHTML}`;
+    });
+    var returnYearTotal = ((data)=>{
+        var returnMount = 0;
+        for (var i = 0; i < data.length; i++) {
+          returnMount += data[i];
+        }
+        return returnMount;
     });
     function returnLastYear(thisYear,data){
       var lastYear = thisYear-1;
@@ -542,4 +543,8 @@ function init(){
     }
     var formatNumber = function(num) {
       return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    }
+
+    function nwCs(num) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
