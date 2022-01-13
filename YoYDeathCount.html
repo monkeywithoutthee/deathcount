@@ -29,10 +29,16 @@
   .tabRow{
     /*display:flex;*/
   /*  padding:5px;*/
+  display:flex;
+  padding:6px;
     border-style:solid;
     border-width:0.5px;
     border-radius:3px;
     margin:5px;
+  }
+  .tabBlock{
+    diplay:block;
+    margin-right:10px;
   }
   .tabBigHead{
     text-align:center;
@@ -55,14 +61,22 @@
   .sHighlight{
     background-color:rgba(255,255,128,0.1);
   }
+  #myChart{
+    -webkit-touch-callout: none;
+    -webkit-text-size-adjust: none;
+    -webkit-user-select: none;
+  }
   body{
     font-family: Verdana, sans-serif;
     background-color: rgba(0,0,0,0.8);
     color:rgba(255,255,255,0.8);
+    -webkit-touch-callout: none;
+    -webkit-text-size-adjust: none;
+    -webkit-user-select: none;
   }
   </style>
 
-    <script src='scripts/charts.js'></script>
+    <script src='scripts/charts.js?version=2'></script>
 	</head>
 <body>
 <div style='padding:10px;'>
@@ -77,7 +91,7 @@
 </div>
 
 </div>
-        <script src='scripts/myCharts2-1.js'></script>
-      <!--  <script src='https://www.redstonecollective.com/scripts/myCharts2-1.js'></script>-->
+        <script src='scripts/myCharts2-1.js?version=9'></script>
+      <!--  <script src='https://www.redstonecollective.com/scripts/myCharts2-1.js?version=3'></script>-->
   </body>
   </html>
