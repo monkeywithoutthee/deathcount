@@ -26,14 +26,13 @@ a:active {
 .tabular{
 }
 .tabRow{
-  /*display:flex;*/
-/*  padding:5px;*/
-display:flex;
-padding:6px;
-  border-style:solid;
-  border-width:0.5px;
-  border-radius:3px;
-  margin:5px;
+  display: flex;
+  padding: 2px;
+  border-style: solid;
+  border-width: 0.5px;
+  border-radius: 3px;
+  margin: 5px;
+  font-size: smaller;
 }
 .tabBlock{
   diplay:block;
@@ -99,4 +98,7 @@ body{
 }
 .pagetext{
   padding:3px;
+}
+.onslink{
+  font-size: smaller;
 }

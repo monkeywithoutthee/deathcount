@@ -1,34 +1,28 @@
 <!doctype html>
 <html>
     <meta charset='utf-8'>
-
+    <meta name="viewport" content="user-scalable=yes, initial-scale=1, width=device-width, viewport-fit=cover">
     <title>Death Count - England and Wales (year-on-year) - Data from Office of National Statistics</title>
 <head>
-  <link rel="stylesheet" href="dc/onsenui/css/onsenui.css">
-<link rel="stylesheet" href="dc/onsenui/css/onsen-css-components.min.css">
-<script src="dc/onsenui/js/onsenui.min.js"></script>
+
 <link rel="stylesheet" href="dc/css/DCstyle.css">
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js'></script>
 	</head>
 <body>
-<div style='padding:10px;'>
-<div><span style='padding:10px;'>Death Count - England and Wales (year-on-year)</span>&nbsp;<a href='https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/deaths/datasets/monthlyfiguresondeathsregisteredbyareaofusualresidence' target='_blank'>Data from Office of National Statistics</a></div>
-<div style='padding:10px;'>note:these figures are the amount of people recorded as having died in each month regardless of cause.</div>
-<div style='padding:0px;'>
-  <canvas id='canvas' width='5' height='5'></canvas>
-</div>
-<div class='chart-container' style='position:relative;'>
+<div class='pagetext'>
+<div><span class='headtext'>Death Count - England and Wales (year-on-year)</span>&nbsp;<a class='onslink' href='https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/deaths/datasets/monthlyfiguresondeathsregisteredbyareaofusualresidence' target='_blank'>Data from Office of National Statistics</a></div>
+<div class='headtext'>note:these figures are the amount of people recorded as having died in each month regardless of cause.</div>
+
+<div class='chart-container'>
 <canvas id='myChart'></canvas>
 <div class='tabular'></div>
 </div>
 
 </div>
-<ons-popover id="popover">
+<popover id="popover" class='popover'>
 
-  </div>
-</ons-popover>
-        <script src='dc/scripts/myCharts3.js?version=1'></script>
-      <!--  <script src='https://www.redstonecollective.com/scripts/myCharts2-1.js?version=3'></script>-->
+</popover>
+        <script src='dc/scripts/myCharts3.js?version=2'></script>
   </body>
   </html>

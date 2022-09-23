@@ -9,6 +9,7 @@ const okey = {"headers":{"Accept":"application/json","Content-Type":"application
 var aDAT = [];
 window.onload = (()=>{
     (async()=>{
+      console.log('init innit!!');
         try {
           const aData = new Promise((resolve, reject) => {resolve(returnGetData());reject('problem')});
           aDAT = await aData.then((data)=>{return data});
@@ -30,8 +31,6 @@ window.onload = (()=>{
     const ifirstYear=2006;//the year of the first dataset
 
     const drawraph = (dataSets)=>{
-
-        //get client width
               //  ctx.style.backgroundColor = 'rgba(255,0,0,255)';
         chart = new window.Chart(window.ctx, {
             // The type of chart we want to create
@@ -41,8 +40,6 @@ window.onload = (()=>{
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                 datasets: dataSets
             },
-            // Configuration options go here
-            //defaults.elements.bar.borderWidth:2,
             options: {
               maintainAspectRatio:true,
               responsive: true,
@@ -57,7 +54,8 @@ window.onload = (()=>{
                     },
                 elements:{
                   point:{
-                    pointStyle:'round'
+                    pointStyle:'round',
+                    pointRadius:2
                   },
                   line:{
                     tension:0.3,
@@ -102,9 +100,9 @@ window.onload = (()=>{
                                     el.style.opacity = 1;
                                     el.style.top = context.element.y+'px';
                                     el.style.left = context.element.x*1+20+'px';
-                                    if (context.element.x*1+250>=this._chart.width){
+                                    if (context.element.x*1+450>=this._chart.width){
                                       el.style.left = context.element.x-270+'px';
-                                    }
+                                    };
                                   //console.log(el,'<<label::',context);
                                   return;
                                 }
@@ -112,7 +110,6 @@ window.onload = (()=>{
                         }
                       }
             }
-
         });
       //  console.log(window.Chart,'drawraph;;',window.Chart.options,window.Chart.defaults);
         const oStyle = document.getElementById('myChart');
@@ -133,12 +130,9 @@ window.onload = (()=>{
 
       };
       const loopLength = (imaxYear - iminYear);
-      //var iThisYear = parseInt(data[i].year);
+
       //  console.log('iminYear::', iminYear, '  imaxYear::', imaxYear, '   loopLength::', loopLength, '   iThisYear::', iThisYear.getFullYear());
-        //var usedYear = 0;
-      //  for (var i = iminYear; i <= imaxYear; i++) {//loops through each years
-        var iFade = 18;//note 255/14 rounds to 18
-        //var iFull = 200;
+
         for (var i = imaxYear; i >= iminYear; i--) {//loops through each year--max to min means the latest is on top!
           var colorNo = i.toString();
           colorNo = (colorNo.substring(2) * 5);
@@ -233,7 +227,7 @@ window.onload = (()=>{
           //do this then return dataset
           for (var j = 0; j < data.length; j++) {
             if (data[j].year === i && usedYear === i) {
-              var sObject = {
+              const sObject = {
                 label: data[j].year,
                 borderColor: sBGCol,
                 data: dataReturn(i, data),
@@ -308,7 +302,7 @@ window.onload = (()=>{
                 //sflux = '- ' + Math.abs(oReturnMobject.flux);
                 sflux = oReturnMobject.flux;
               };
-              var iPerc = (oReturnMobject.flux / oReturnMobject.lastyear) * 100;//gets the percentage rise from last year
+              const iPerc = (oReturnMobject.flux / oReturnMobject.lastyear) * 100;//gets the percentage rise from last year
                 //console.log(oReturnMobject.lastyear,oReturnMobject.flux,'working the perc::')
               const thisRs = returnCumulative({year:data.year,month:data.month,monthNo:data.monthNo*1+1,thisRow:i,data:aDAT});
               const thatRs = returnCumulative({year:data.year-1,month:data.month,monthNo:data.monthNo*1+1,thisRow:i,data:aDAT});
@@ -327,11 +321,9 @@ window.onload = (()=>{
                             }
                   sHTML += `</div>`;
               return sHTML;
-          }
-
-
-      }
-    }
+          };
+      };
+    };
 
     const returnMonthNo = function(month) {
       //returns the month number from strings
@@ -433,7 +425,7 @@ window.onload = (()=>{
               if (iaverage < 0){
                 sFlux = nwCs(iaverage);
               };
-              var t = iaverage * averagePeriod;
+              const t = iaverage * averagePeriod;
               iPerc = (t / icumulat) * 100;//gets the percentage rise from last year
               //(100 * partialValue) / totalValue;
               return `<div class='toolTipInfo'>Avr last ${averagePeriod} years : ${sFlux}&nbsp;(${iPerc.toFixed(2)}%)</div>${sHTML}`;
@@ -449,7 +441,7 @@ window.onload = (()=>{
         averagePeriod = averagePeriod-(ifirstYear-startYear);
       }
     //  console.log(year,startYear,'<<start year  averagePeriod::',averagePeriod)
-      var iTotal = year-startYear;
+      const iTotal = year-startYear;
       var iaverage = 0;
       var sHTML = ``;
       for (var i=year;i>=startYear;i--){
@@ -543,25 +535,8 @@ window.onload = (()=>{
     };
   };
 
-  window.fadeOut = ((elem)=>{
-
-      var opacity = 1;
-      var timer = setInterval( function() {
-        opacity -= 50 / 250;
-        if( opacity <= 0 )
-        {
-          clearInterval(timer);
-          opacity = 0;
-          elem.style.display = "none";
-          //elem.style.visibility = "hidden";
-        }
-        elem.style.opacity = opacity;
-        elem.style.filter = "alpha(opacity=" + opacity * 100 + ")";
-      }, 50 );
-    });
-
     document.addEventListener('click',(event)=>{
-      console.log('click::',event.target);
+      //console.log('click::',event.target);
       if (event.target.id!=='myChart'){
         if (!event.target.className.includes('popovercontent')){
           const el = document.querySelector('.popover');
