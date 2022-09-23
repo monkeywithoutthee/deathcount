@@ -105,7 +105,6 @@ window.onload = (()=>{
                                     if (context.element.x*1+250>=this._chart.width){
                                       el.style.left = context.element.x-270+'px';
                                     }
-                                    document.body.appendChild(el);
                                   //console.log(el,'<<label::',context);
                                   return;
                                 }
