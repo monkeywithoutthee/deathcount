@@ -122,7 +122,7 @@ window.onload = (()=>{
                                     el.style.opacity = 1;
                                     el.style.top = context.element.y+'px';
                                     el.style.left = context.element.x*1+20+'px';
-                                    if (context.element.x*1+250>=this._chart.width){
+                                    if (context.element.x*1+150>=this._chart.width){
                                       el.style.left = context.element.x-270+'px';
                                     };
                                   //console.log(el,'<<label::',context);
@@ -501,7 +501,7 @@ window.onload = (()=>{
         if (data[i].label===2015||data[i].label===2020){
           sHighlight= 'sHighlight';
         }
-          if (data[i].label !== 2022){
+          if (data[i].label){
 
             sHTML += `<div class='tabRow ${sHighlight}'>
               <div class='tabBlock'>${data[i].label} : ${nwCs(returnYearTotal(data[i].data))} deaths</div>`;
@@ -572,3 +572,41 @@ window.onload = (()=>{
     function kFormatter(num) {
         return Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k' : Math.sign(num)*Math.abs(num)
     };
+
+    let timeoutID = 0;
+    let isHeld = false;
+    document.addEventListener('touchstart',(event)=>{
+      //event.preventDefault();
+      event.stopPropagation();
+      //console.log('touchstart::',event);
+      if (event.target.id==='myChart'&&!isHeld){
+        isHeld = true;
+        timeoutID = setTimeout(function() {
+          //console.log(timeoutID,isHeld,'<<touchstart ::',event,document.getElementsByTagName( 'html' ));
+          var root = document.getElementsByTagName('html')[0];
+          var el = document.querySelector('.pagetext');
+          if (el){el.classList.add('lockBody');};
+          root.classList.add('lockBody');
+          document.body.classList.add('lockBody');
+          return;
+        }, 500);
+        return;
+        };
+      });
+    document.addEventListener('touchmove',(event)=>{
+      //event.preventDefault();
+      event.stopPropagation();
+      //console.log(timeoutID,isHeld,'<<touchmove::',event);
+      return;
+    });
+    document.addEventListener('touchend',(event)=>{
+      isHeld = false;
+      clearTimeout(timeoutID);
+      var root = document.getElementsByTagName('html')[0];
+      root.classList.remove('lockBody');
+      var el = document.querySelector('.pagetext');
+      if (el){el.classList.remove('lockBody');};
+      document.body.classList.remove('lockBody');
+    //  console.log(timeoutID,isHeld,'<<touchend::',event);
+      return;
+    });
