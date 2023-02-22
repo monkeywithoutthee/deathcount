@@ -9,6 +9,7 @@ const okey = {"headers":{"Accept":"application/json","Content-Type":"application
 var aDAT = [];
 window.onload = (()=>{
     (async()=>{
+      console.log('init innit!!');
         try {
           const aData = new Promise((resolve, reject) => {resolve(returnGetData());reject('problem')});
           aDAT = await aData.then((data)=>{return data});
@@ -18,7 +19,6 @@ window.onload = (()=>{
             return data})
           .then((data)=>{
             drawTabular(data);
-            //console.log(aData,'<<chart::',window.Chart);
           });
           }catch(error){
           console.log('init error::',error);
@@ -28,36 +28,34 @@ window.onload = (()=>{
     var chart;
     var ctx = document.getElementById('myChart').getContext('2d');
     const ifirstYear=2006;//the year of the first dataset
-
+//aspectRatio
     const drawraph = (dataSets)=>{
-
-        //get client width
               //  ctx.style.backgroundColor = 'rgba(255,0,0,255)';
+
         chart = new window.Chart(window.ctx, {
             // The type of chart we want to create
             type: 'line',
-            maintainAspectRatio:false,
-            responsive: false,
             // The data for our dataset
             data: {
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                 datasets: dataSets
             },
-            // Configuration options go here
-            //defaults.elements.bar.borderWidth:2,
             options: {
+              maintainAspectRatio:true,
+              responsive: true,
               events:['mousemove','mouseout','click','touchstart','touchmove'],
                   layout: {
                       padding: {
-                          left: 5,
-                          right: 5,
+                          left: 2,
+                          right: 2,
                           top: 5,
                           bottom: 5
                         }
                     },
                 elements:{
                   point:{
-                    pointStyle:'round'
+                    pointStyle:'round',
+                    pointRadius:2
                   },
                   line:{
                     tension:0.3,
@@ -68,18 +66,43 @@ window.onload = (()=>{
                     xAxes: {
                       grid: {
                         color:'rgba(255,255,0,0.2)'
-                      }
+                      },
+                      ticks: {
+                          font: {
+                              size: 10,
+                          }
+                      },
                     },
                     yAxes: {
                       grid: {
                         color:'rgba(255,255,0,0.2)'
-                      }
+                      },
+                      ticks: {
+                          font: {
+                              size: 8,
+                          }
+                      },
                     },
                   },
+
                 plugins: {
+                  lables:{
+                    font: {
+                        size: 10
+                    }
+                  },
                   legend: {
                       display: true,
                       position:'bottom',
+                      maxHeight:50,
+                      labels:{
+                        boxWidth:2,
+                        padding:6,
+                        textAlign:'left',
+                        font: {
+                            size: 10
+                        }
+                      }
                     },
                       tooltip: {
                           enabled: false,
@@ -98,18 +121,16 @@ window.onload = (()=>{
                                     el.style.opacity = 1;
                                     el.style.top = context.element.y+'px';
                                     el.style.left = context.element.x*1+20+'px';
-                                    if (context.element.x*1+250>=this._chart.width){
+                                    if (context.element.x*1+150>=this._chart.width){
                                       el.style.left = context.element.x-270+'px';
-                                    }
-                                    document.body.appendChild(el);
+                                    };
                                   //console.log(el,'<<label::',context);
                                   return;
-                                }
-                            }
-                        }
-                      }
-            }
-
+                                  },
+                              },
+                          },
+                      },
+                  },
         });
       //  console.log(window.Chart,'drawraph;;',window.Chart.options,window.Chart.defaults);
         const oStyle = document.getElementById('myChart');
@@ -129,17 +150,13 @@ window.onload = (()=>{
         if (parseInt(data[i].year) > imaxYear) {imaxYear = parseInt(data[i].year);}
 
       };
-      var loopLength = (imaxYear - iminYear);
-      //var iThisYear = parseInt(data[i].year);
+      const loopLength = (imaxYear - iminYear);
+
       //  console.log('iminYear::', iminYear, '  imaxYear::', imaxYear, '   loopLength::', loopLength, '   iThisYear::', iThisYear.getFullYear());
-        //var usedYear = 0;
-      //  for (var i = iminYear; i <= imaxYear; i++) {//loops through each years
-        var iFade = 18;//note 255/14 rounds to 18
-        //var iFull = 200;
+
         for (var i = imaxYear; i >= iminYear; i--) {//loops through each year--max to min means the latest is on top!
           var colorNo = i.toString();
           colorNo = (colorNo.substring(2) * 5);
-
 
           //we have 14 years before 2020, gradient change the colour from white to yellow over 14 years
           //new plan, we draw out in 5 year blocks
@@ -230,14 +247,14 @@ window.onload = (()=>{
           //do this then return dataset
           for (var j = 0; j < data.length; j++) {
             if (data[j].year === i && usedYear === i) {
-              var sObject = {
+              const sObject = {
                 label: data[j].year,
                 borderColor: sBGCol,
                 data: dataReturn(i, data),
                 hoverBorderColor:'rgba(0,255,0, 0.3)',
                 hoverBorderWidth:30,
                 pointBorderWidth:10,
-                hitRadius:5
+                hitRadius:10
               }
               aDataSets.push(sObject);
               usedYear = 0;
@@ -250,7 +267,7 @@ window.onload = (()=>{
 
       //  console.log('aDataSets::', JSON.stringify(aDataSets))
     }
-    var dataReturn = function(year, data) {
+    const dataReturn = function(year, data) {
     //  console.log('dataamounts::', year);
       var aMonthlyData = [];
       for (var i = 1; i < 13; i++) {//return each months data
@@ -260,7 +277,7 @@ window.onload = (()=>{
       //console.log('retiurning data for year::', JSON.stringify(aMonthlyData));
       return aMonthlyData;
     }
-    var returnamounts = function(year, month, data) {
+    const returnamounts = function(year, month, data) {
     //  var aReturnamounts = '';
       for (var i = 0; i < data.length; i++) {
         if (parseInt(data[i].year) === year && parseInt(data[i].month) === month) {
@@ -272,7 +289,7 @@ window.onload = (()=>{
       //return aReturnamounts;
       //  return [0, 10, 5, 2, 20, 30, 45, 0, 10, 5, 88, 20];
     }
-    var returnGetData = (()=>{
+    const returnGetData = (()=>{
         return window.fetch(okey.path, {
           method: 'GET',
           headers: okey.headers
@@ -287,12 +304,12 @@ window.onload = (()=>{
           console.log("error::;", error);
        })
     });
-    var getRandomNumber = function(hi, lo) {
+    const getRandomNumber = function(hi, lo) {
         //returns a randon number between hi and lo
         return Math.floor(Math.random() * (hi - lo)) + lo;
     }
 
-    var returnDataExt = function(data){
+    const returnDataExt = function(data){
     //  console.log(aDAT,'<<returnDataExt::', data);
       //data={value:0,year:'',monthNo:0,month:''}
       //var ireturnMonthNo = returnMonthNo(month);
@@ -305,7 +322,7 @@ window.onload = (()=>{
                 //sflux = '- ' + Math.abs(oReturnMobject.flux);
                 sflux = oReturnMobject.flux;
               };
-              var iPerc = (oReturnMobject.flux / oReturnMobject.lastyear) * 100;//gets the percentage rise from last year
+              const iPerc = (oReturnMobject.flux / oReturnMobject.lastyear) * 100;//gets the percentage rise from last year
                 //console.log(oReturnMobject.lastyear,oReturnMobject.flux,'working the perc::')
               const thisRs = returnCumulative({year:data.year,month:data.month,monthNo:data.monthNo*1+1,thisRow:i,data:aDAT});
               const thatRs = returnCumulative({year:data.year-1,month:data.month,monthNo:data.monthNo*1+1,thisRow:i,data:aDAT});
@@ -313,7 +330,7 @@ window.onload = (()=>{
               const percDif = (diff / thatRs) * 100;
             //  console.log(thisRs,thatRs,'<thisthat:',percDif);
               //(100 * iaverage * averagePeriod) / (icumulat);//gets the percentage rise from last data.year
-              var sHTML = `<div>
+              var sHTML = `<div class='popovercontent'>
                             <div class='toolTipInfo'><b>${data.month} ${data.year} : ${nwCs(data.value)}</b> deaths</div>`
                             if (data.year > ifirstYear){
                               sHTML += `<div class='toolTipInfo'>prev yr <i>(${data.month}&nbsp;${data.year-1})</i> : ${nwCs(oReturnMobject.lastyear)}\n deaths</div>
@@ -324,11 +341,9 @@ window.onload = (()=>{
                             }
                   sHTML += `</div>`;
               return sHTML;
-          }
-
-
-      }
-    }
+          };
+      };
+    };
 
     const returnMonthNo = function(month) {
       //returns the month number from strings
@@ -430,7 +445,7 @@ window.onload = (()=>{
               if (iaverage < 0){
                 sFlux = nwCs(iaverage);
               };
-              var t = iaverage * averagePeriod;
+              const t = iaverage * averagePeriod;
               iPerc = (t / icumulat) * 100;//gets the percentage rise from last year
               //(100 * partialValue) / totalValue;
               return `<div class='toolTipInfo'>Avr last ${averagePeriod} years : ${sFlux}&nbsp;(${iPerc.toFixed(2)}%)</div>${sHTML}`;
@@ -446,7 +461,7 @@ window.onload = (()=>{
         averagePeriod = averagePeriod-(ifirstYear-startYear);
       }
     //  console.log(year,startYear,'<<start year  averagePeriod::',averagePeriod)
-      var iTotal = year-startYear;
+      const iTotal = year-startYear;
       var iaverage = 0;
       var sHTML = ``;
       for (var i=year;i>=startYear;i--){
@@ -464,7 +479,7 @@ window.onload = (()=>{
 
     const drawTabular = ((data)=>{
       var sHTML = '';
-
+    //  console.log('drawTabular::',data)
         for (var i=0;i<data.length;i++){
           const iYearEnd = returnYearEnd(data[i].data);
           const iLastYear = returnLastYear(data[i].label,data);
@@ -481,11 +496,12 @@ window.onload = (()=>{
           if (fiveYearFlux<0){fivePlus = 'MINUS';};
         //console.log('sfiveYearAverage::',sfiveYearAverage)
         var sHighlight = ``;
-        //console.log('comparing::',data[i].label,2015)
+        //console.log('comparing::',data[i].label,data[i].label)
         if (data[i].label===2015||data[i].label===2020){
           sHighlight= 'sHighlight';
         }
-          if (data[i].label !== 2022){
+        const now = new Date();
+          if (data[i].label!==now.getFullYear()){
 
             sHTML += `<div class='tabRow ${sHighlight}'>
               <div class='tabBlock'>${data[i].label} : ${nwCs(returnYearTotal(data[i].data))} deaths</div>`;
@@ -540,28 +556,57 @@ window.onload = (()=>{
     };
   };
 
-  window.fadeOut = ((elem)=>{
-
-      var opacity = 1;
-      var timer = setInterval( function() {
-        opacity -= 50 / 250;
-        if( opacity <= 0 )
-        {
-          clearInterval(timer);
-          opacity = 0;
-          elem.style.display = "none";
-          //elem.style.visibility = "hidden";
-        }
-        elem.style.opacity = opacity;
-        elem.style.filter = "alpha(opacity=" + opacity * 100 + ")";
-      }, 50 );
-    });
-
     document.addEventListener('click',(event)=>{
+      //console.log('click::',event.target);
       if (event.target.id!=='myChart'){
-        const el = document.querySelector('.popover');
-        if (el){
-          el.style.display = 'none';
-        }
+        if (!event.target.className.includes('popovercontent')){
+          const el = document.querySelector('.popover');
+          if (el){
+            el.style.display = 'none';
+          };
+        };
       };
     })
+
+
+    function kFormatter(num) {
+        return Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k' : Math.sign(num)*Math.abs(num)
+    };
+
+    let timeoutID = 0;
+    let isHeld = false;
+    document.addEventListener('touchstart',(event)=>{
+      //event.preventDefault();
+      event.stopPropagation();
+      //console.log('touchstart::',event);
+      if (event.target.id==='myChart'&&!isHeld){
+        isHeld = true;
+        timeoutID = setTimeout(function() {
+          //console.log(timeoutID,isHeld,'<<touchstart ::',event,document.getElementsByTagName( 'html' ));
+          var root = document.getElementsByTagName('html')[0];
+          var el = document.querySelector('.pagetext');
+          if (el){el.classList.add('lockBody');};
+          root.classList.add('lockBody');
+          document.body.classList.add('lockBody');
+          return;
+        }, 500);
+        return;
+        };
+      });
+    document.addEventListener('touchmove',(event)=>{
+      //event.preventDefault();
+      event.stopPropagation();
+      //console.log(timeoutID,isHeld,'<<touchmove::',event);
+      return;
+    });
+    document.addEventListener('touchend',(event)=>{
+      isHeld = false;
+      clearTimeout(timeoutID);
+      var root = document.getElementsByTagName('html')[0];
+      root.classList.remove('lockBody');
+      var el = document.querySelector('.pagetext');
+      if (el){el.classList.remove('lockBody');};
+      document.body.classList.remove('lockBody');
+    //  console.log(timeoutID,isHeld,'<<touchend::',event);
+      return;
+    });
