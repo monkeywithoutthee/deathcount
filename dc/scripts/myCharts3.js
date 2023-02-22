@@ -19,7 +19,6 @@ window.onload = (()=>{
             return data})
           .then((data)=>{
             drawTabular(data);
-            //console.log(aData,'<<chart::',window.Chart);
           });
           }catch(error){
           console.log('init error::',error);
@@ -480,7 +479,7 @@ window.onload = (()=>{
 
     const drawTabular = ((data)=>{
       var sHTML = '';
-
+    //  console.log('drawTabular::',data)
         for (var i=0;i<data.length;i++){
           const iYearEnd = returnYearEnd(data[i].data);
           const iLastYear = returnLastYear(data[i].label,data);
@@ -497,11 +496,12 @@ window.onload = (()=>{
           if (fiveYearFlux<0){fivePlus = 'MINUS';};
         //console.log('sfiveYearAverage::',sfiveYearAverage)
         var sHighlight = ``;
-        //console.log('comparing::',data[i].label,2015)
+        //console.log('comparing::',data[i].label,data[i].label)
         if (data[i].label===2015||data[i].label===2020){
           sHighlight= 'sHighlight';
         }
-          if (data[i].label){
+        const now = new Date();
+          if (data[i].label!==now.getFullYear()){
 
             sHTML += `<div class='tabRow ${sHighlight}'>
               <div class='tabBlock'>${data[i].label} : ${nwCs(returnYearTotal(data[i].data))} deaths</div>`;
