@@ -4,6 +4,15 @@ html{
 body{
   overflow:auto;
   margin:0;
+  font-family: Verdana, sans-serif;
+  background-color: rgba(0,0,0,0.8);
+  color:rgba(255,255,255,0.8);
+
+}
+#myChart{
+  -webkit-touch-callout: none;
+  -webkit-text-size-adjust: none;
+  -webkit-user-select: none;
 }
 a:link {
   color: rgba(255,255,255,0.8);
@@ -61,17 +70,7 @@ a:active {
 .sHighlight{
   background-color:rgba(255,255,128,0.1);
 }
-#myChart{
-  -webkit-touch-callout: none;
-  -webkit-text-size-adjust: none;
-  -webkit-user-select: none;
-}
-body{
-  font-family: Verdana, sans-serif;
-  background-color: rgba(0,0,0,0.8);
-  color:rgba(255,255,255,0.8);
 
-}
 .dcHead{
    padding:10px;
 }
@@ -106,4 +105,8 @@ body{
 }
 .htholder{
   padding:3px;
+}
+.lockBody{
+  overflow:hidden !important;
+   position:relative !important;
 }
